@@ -11,7 +11,7 @@ import StepOne from "./components/StepOne";
 import StepTwo from "./components/StepTwo";
 import StepThree from "./components/StepThree";
 import StepFour from "./components/StepFour";
-import Sidebar from "./components/Sidebar";
+import SideBar from "./components/SideBar";
 import SuccessModal from "./components/SuccessModal";
 import ForgotPasswordPage from "./components/ForgotPasswordPage";
 import ResetPasswordPage from "./components/ResetPasswordPage";
@@ -201,7 +201,7 @@ function SignupFlow() {
     <>
       <div className="signup-wrapper">
         <div className="app-container">
-          <Sidebar currentStep={step} />
+          <SideBar currentStep={step} />
 
           <div className="content-area">
             <form ref={formRef} className="step-content" noValidate>
