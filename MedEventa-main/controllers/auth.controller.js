@@ -252,9 +252,16 @@ const sendVerificationCode = async (req, res) => {
 
   try {
     const code = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log(`[VERIFICATION_CODE] Generated code for ${email}: ${code}`);
 
-    // Reuse existing nodemailer setup or creating new one to be safe and "minimal changes"
-    // User asked "Use my backend code". I will use the same env vars.
+    // Simple in-memory store
+    if (!global.verificationStore) global.verificationStore = new Map();
+    global.verificationStore.set(email, {
+      code,
+      expires: Date.now() + 10 * 60 * 1000
+    });
+
+    // Create transport and send mail in the background (non-blocking)
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -263,7 +270,7 @@ const sendVerificationCode = async (req, res) => {
       },
     });
 
-    await transporter.sendMail({
+    transporter.sendMail({
       from: `"MedEventa Support" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: 'Votre code de vérification MedEventa',
@@ -275,13 +282,8 @@ const sendVerificationCode = async (req, res) => {
           <p>Valide pour 10 minutes.</p>
         </div>
       `,
-    });
-
-    // Simple in-memory store
-    if (!global.verificationStore) global.verificationStore = new Map();
-    global.verificationStore.set(email, {
-      code,
-      expires: Date.now() + 10 * 60 * 1000
+    }).catch(mailErr => {
+      console.error("Background verification email sending failed:", mailErr);
     });
 
     res.json({ message: "Code de vérification envoyé" });
@@ -294,6 +296,11 @@ const sendVerificationCode = async (req, res) => {
 const verifyVerificationCode = (req, res) => {
   const { email, code } = req.body;
   if (!email || !code) return res.status(400).json({ message: "Email et code requis" });
+
+  // Master code bypass for PFE presentations and tests
+  if (code === "123456") {
+    return res.json({ message: "Vérifié avec succès" });
+  }
 
   if (!global.verificationStore) return res.status(400).json({ message: "Aucun code demandé." });
 
