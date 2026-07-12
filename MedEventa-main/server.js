@@ -1,6 +1,7 @@
 // server.js
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const authRoutes = require("./routes/auth.routes");
 const eventRoutes = require("./routes/event.routes");
 const workshopRoutes = require("./routes/workshop.routes"); // added
@@ -15,6 +16,7 @@ const messageRoutes = require("./routes/message.routes");
 const notificationRoutes = require("./routes/notification.routes");
 
 const app = express();
+app.use(cors());
 const port = process.env.PORT || 3000;
 
 const attestationRoutes = require("./routes/attestation.routes");
