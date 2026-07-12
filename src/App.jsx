@@ -85,6 +85,10 @@ function SignupFlow() {
     setErrorMsg("");
 
     if (step === 2) {
+      if (formData.password !== formData.confirmPassword) {
+        setErrorMsg("Passwords do not match.");
+        return;
+      }
       // Moving from Account info -> Email confirmation
       try {
         // Send verification code
@@ -204,7 +208,7 @@ function SignupFlow() {
           <SideBar currentStep={step} />
 
           <div className="content-area">
-            <form ref={formRef} className="step-content" noValidate>
+            <form ref={formRef} className="step-content">
               {errorMsg && (
                 <div className="signup-error-message">
                   <FaExclamationTriangle /> {errorMsg}
