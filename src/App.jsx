@@ -79,8 +79,14 @@ function SignupFlow() {
   const prevStep = () => setStep((s) => Math.max(s - 1, 1));
 
   const handleNext = async () => {
-    if (!formRef.current) return;
-    if (!formRef.current.reportValidity()) return;
+    console.log("handleNext triggered, current step:", step);
+    if (!formRef.current) {
+      console.log("formRef.current is null");
+      return;
+    }
+    const isValid = formRef.current.reportValidity();
+    console.log("Is form valid according to HTML5 constraints?", isValid);
+    if (!isValid) return;
 
     setErrorMsg("");
 
