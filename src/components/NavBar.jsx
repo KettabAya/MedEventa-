@@ -1,6 +1,6 @@
 // src/components/Navbar.jsx
 import React, { useState } from "react";
-import "./Navbar.css";
+import "./NavBar.css";
 import { FaChevronDown, FaBars, FaBell } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 import ActivityFeed from "./ActivityFeed";
