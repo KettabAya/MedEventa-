@@ -109,16 +109,87 @@ const Messages = () => {
 
   // Fetch users for recipient selection
   const fetchUsers = async (eventId = null) => {
+    if (!eventId) {
+      setUsers([]);
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
-      const params = eventId ? { eventId } : {};
-      const response = await axios.get("/api/users", {
-        headers: { Authorization: `Bearer ${token}` },
-        params,
-      });
-      setUsers(response.data.users || []);
+      const usersList = [];
+      const userIds = new Set();
+
+      // 1. Get Event Details (Organizer + Committee)
+      try {
+        const eventRes = await axios.get(`/api/events/${eventId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (eventRes.data) {
+          const { event, comite } = eventRes.data;
+
+          // Add Organizer
+          if (event && event.id_organisateur && !userIds.has(event.id_organisateur)) {
+            usersList.push({
+              id: event.id_organisateur,
+              nom: "Organisateur",
+              prenom: "",
+              email: event.contact || "",
+              role: "ORGANISATEUR"
+            });
+            userIds.add(event.id_organisateur);
+          }
+
+          // Add Committee Members
+          if (comite && Array.isArray(comite)) {
+            comite.forEach(member => {
+              if (!userIds.has(member.id)) {
+                usersList.push({
+                  id: member.id,
+                  nom: member.nom,
+                  prenom: member.prenom,
+                  email: member.email,
+                  role: "COMITE"
+                });
+                userIds.add(member.id);
+              }
+            });
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching event members:", err);
+      }
+
+      // 2. Get Participants (Only if authorized)
+      try {
+        const partRes = await axios.get(`/api/inscriptions/event/${eventId}/participants`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (partRes.data && Array.isArray(partRes.data.participants)) {
+          partRes.data.participants.forEach(p => {
+            if (!userIds.has(p.utilisateurId)) {
+              usersList.push({
+                id: p.utilisateurId,
+                nom: p.nom,
+                prenom: p.prenom,
+                email: p.email,
+                role: p.profil
+              });
+              userIds.add(p.utilisateurId);
+            }
+          });
+        }
+      } catch (err) {
+        // Silently ignore 403 as we might not have permission
+        if (err.response?.status !== 403) {
+          console.error("Error fetching participants:", err);
+        }
+      }
+
+      setUsers(usersList);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error in fetchUsers:", error);
     }
   };
 
@@ -213,7 +284,7 @@ const Messages = () => {
       console.error("Error sending message:", error);
       setComposeError(
         error.response?.data?.message ||
-          "Failed to send message. Please try again."
+        "Failed to send message. Please try again."
       );
     } finally {
       setLoading(false);
@@ -467,12 +538,10 @@ const Messages = () => {
                       <div>
                         <strong>
                           {view === "inbox"
-                            ? `${selectedMessage.prenom || ""} ${
-                                selectedMessage.nom || ""
-                              }`
-                            : `To: ${selectedMessage.prenom || ""} ${
-                                selectedMessage.nom || ""
-                              }`}
+                            ? `${selectedMessage.prenom || ""} ${selectedMessage.nom || ""
+                            }`
+                            : `To: ${selectedMessage.prenom || ""} ${selectedMessage.nom || ""
+                            }`}
                         </strong>
                         <span>{selectedMessage.email || ""}</span>
                       </div>
@@ -504,18 +573,16 @@ const Messages = () => {
               {view === "inbox" && (
                 <div className="messages-filters">
                   <button
-                    className={`messages-filter-btn ${
-                      filter === "all" ? "active" : ""
-                    }`}
+                    className={`messages-filter-btn ${filter === "all" ? "active" : ""
+                      }`}
                     onClick={() => setFilter("all")}
                     type="button"
                   >
                     All
                   </button>
                   <button
-                    className={`messages-filter-btn ${
-                      filter === "unread" ? "active" : ""
-                    }`}
+                    className={`messages-filter-btn ${filter === "unread" ? "active" : ""
+                      }`}
                     onClick={() => setFilter("unread")}
                     type="button"
                   >
@@ -524,9 +591,8 @@ const Messages = () => {
                   {messageEvents.map((event) => (
                     <button
                       key={event.id}
-                      className={`messages-filter-btn ${
-                        filter === event.id.toString() ? "active" : ""
-                      }`}
+                      className={`messages-filter-btn ${filter === event.id.toString() ? "active" : ""
+                        }`}
                       onClick={() => setFilter(event.id.toString())}
                       type="button"
                     >
@@ -552,9 +618,8 @@ const Messages = () => {
                   {displayedMessages.map((message) => (
                     <div
                       key={message.id}
-                      className={`message-item ${
-                        !message.lu && view === "inbox" ? "unread" : ""
-                      }`}
+                      className={`message-item ${!message.lu && view === "inbox" ? "unread" : ""
+                        }`}
                       onClick={() => handleMessageClick(message)}
                     >
                       <div className="message-item-main">
@@ -566,9 +631,8 @@ const Messages = () => {
                             <strong>
                               {view === "inbox"
                                 ? `${message.prenom || ""} ${message.nom || ""}`
-                                : `To: ${message.prenom || ""} ${
-                                    message.nom || ""
-                                  }`}
+                                : `To: ${message.prenom || ""} ${message.nom || ""
+                                }`}
                             </strong>
                             <span className="message-item-date">
                               {formatDate(message.date_envoi)}

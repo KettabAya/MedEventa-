@@ -195,6 +195,33 @@ const Navbar = () => {
                       </>
                     )}
 
+                    {/* Bloc réservé aux communicants (Authors) */}
+                    {user.role === "communicant" && (
+                      <>
+                        <button
+                          type="button"
+                          className="navbar-dropdown-item"
+                          onClick={() => navigate("/author/dashboard")}
+                        >
+                          Author Dashboard
+                        </button>
+                        <button
+                          type="button"
+                          className="navbar-dropdown-item"
+                          onClick={() => navigate("/author/new-submission")}
+                        >
+                          New Submission
+                        </button>
+                        <button
+                          type="button"
+                          className="navbar-dropdown-item"
+                          onClick={() => navigate("/author/programme")}
+                        >
+                          My Programme
+                        </button>
+                      </>
+                    )}
+
                     {/* Profil */}
                     <button
                       type="button"

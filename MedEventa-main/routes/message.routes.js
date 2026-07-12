@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { sendMessage, getMessages,getDashboardActivity } = require('../controllers/message.controller');
+const { sendMessage, getMessages, getDashboardActivity } = require('../controllers/message.controller');
 const { sendMessageValidation } = require('../validators/message.validators');
 const { verifyToken } = require('../middlewares/auth.middlewares'); // ou ton fichier auth
 

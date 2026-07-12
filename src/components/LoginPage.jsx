@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import "./Login.css";
+import axios from "axios";
 import { auth, googleProvider } from "./firebase";
-import { signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithPopup } from "firebase/auth";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -36,16 +37,16 @@ function LoginPage() {
     setIsLoading(true);
 
     try {
-      const result = await signInWithEmailAndPassword(auth, email, password);
-      const user = result.user;
+      const response = await axios.post("/api/auth/login", {
+        email,
+        password
+      });
 
-      const userToStore = {
-        name: user.displayName || email.split("@")[0],
-        email: user.email,
-        photoUrl: user.photoURL || "",
-      };
+      const { user, token } = response.data;
 
-      localStorage.setItem("user", JSON.stringify(userToStore));
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
       if (rememberMe) {
         localStorage.setItem("rememberEmail", email);
       } else {
@@ -55,7 +56,7 @@ function LoginPage() {
       handleLoginSuccess();
     } catch (err) {
       console.error(err);
-      setError("Incorrect email or password.");
+      setError(err.response?.data?.message || "Incorrect email or password.");
     } finally {
       setIsLoading(false);
     }
@@ -68,13 +69,19 @@ function LoginPage() {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
 
+      // Note: This user object comes from Firebase, not the custom backend.
+      // Some backend features might not work without a backend-issued token.
       const userToStore = {
         name: user.displayName || user.email.split("@")[0],
         email: user.email,
         photoUrl: user.photoURL || "",
+        role: "participant", // Default role for Google users if not sync'd
       };
 
       localStorage.setItem("user", JSON.stringify(userToStore));
+      // We don't have a backend token here unless we sync with backend
+      // localStorage.setItem("token", "firebase-token"); 
+
       handleLoginSuccess();
     } catch (err) {
       console.error(err);

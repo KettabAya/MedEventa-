@@ -246,9 +246,71 @@ const sendResetEmail = async (to, code) => {
   });
 };
 
+const sendVerificationCode = async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ message: "Email requis" });
+
+  try {
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Reuse existing nodemailer setup or creating new one to be safe and "minimal changes"
+    // User asked "Use my backend code". I will use the same env vars.
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"MedEventa Support" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: 'Votre code de vérification MedEventa',
+      html: `
+        <div style="font-family: sans-serif; padding: 20px;">
+          <h2>Bienvenue sur MedEventa !</h2>
+          <p>Voici votre code de vérification :</p>
+          <h1 style="color: #09e0c7; letter-spacing: 2px;">${code}</h1>
+          <p>Valide pour 10 minutes.</p>
+        </div>
+      `,
+    });
+
+    // Simple in-memory store
+    if (!global.verificationStore) global.verificationStore = new Map();
+    global.verificationStore.set(email, {
+      code,
+      expires: Date.now() + 10 * 60 * 1000
+    });
+
+    res.json({ message: "Code de vérification envoyé" });
+  } catch (error) {
+    console.error("Erreur envoi code:", error);
+    res.status(500).json({ message: error.message || "Impossible d'envoyer l'email" });
+  }
+};
+
+const verifyVerificationCode = (req, res) => {
+  const { email, code } = req.body;
+  if (!email || !code) return res.status(400).json({ message: "Email et code requis" });
+
+  if (!global.verificationStore) return res.status(400).json({ message: "Aucun code demandé." });
+
+  const record = global.verificationStore.get(email);
+  if (!record) return res.status(400).json({ message: "Aucun code trouvé." });
+  if (Date.now() > record.expires) return res.status(400).json({ message: "Code expiré." });
+  if (record.code !== code) return res.status(400).json({ message: "Code invalide." });
+
+  global.verificationStore.delete(email);
+  res.json({ message: "Vérifié avec succès" });
+};
+
 module.exports = {
   register,
   login,
   forgotPassword,
   resetPassword,
+  sendVerificationCode,
+  verifyVerificationCode,
 };

@@ -1,0 +1,243 @@
+/* Author Badges Styles */
+
+.ab-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.ab-header {
+    margin-bottom: 3rem;
+}
+
+.ab-header h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #12324a;
+    margin-bottom: 0.5rem;
+}
+
+.ab-header p {
+    color: #5d7b8a;
+    font-size: 1.1rem;
+}
+
+.ab-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+/* Selection Column */
+.ab-selection-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(15, 157, 138, 0.1);
+    margin-bottom: 2rem;
+}
+
+.ab-card-title {
+    font-weight: 600;
+    color: #12324a;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.ab-comm-item {
+    background: #f0fdfa;
+    border: 1px solid #0f9d8a;
+    border-radius: 12px;
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ab-comm-title {
+    font-weight: 700;
+    color: #102941;
+    margin-bottom: 0.25rem;
+}
+
+.ab-comm-author {
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+.ab-info-card {
+    background: #11324a;
+    border-radius: 20px;
+    padding: 2rem;
+    color: white;
+    margin-top: 2rem;
+}
+
+.ab-info-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+}
+
+.ab-info-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 1.5rem;
+}
+
+.ab-update-btn {
+    background: white;
+    color: #11324a;
+    border: none;
+    font-weight: 600;
+    padding: 0.6rem 1.25rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.ab-update-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Badge Preview Column */
+.ab-badge-preview {
+    background: white;
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+}
+
+.badge-frame {
+    width: 100%;
+    max-width: 320px;
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f1f5f9;
+}
+
+.badge-header {
+    background: #0f9d8a;
+    padding: 2rem 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.badge-logo {
+    background: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 999px;
+    font-weight: 800;
+    color: #0f9d8a;
+    font-style: italic;
+    font-size: 1.2rem;
+}
+
+.badge-body {
+    padding: 2rem 1.5rem 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.badge-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 16px;
+    object-fit: cover;
+    margin-bottom: 1.5rem;
+    background: #e2e8f0;
+}
+
+.badge-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #12324a;
+    margin-bottom: 0.25rem;
+}
+
+.badge-role {
+    font-size: 0.85rem;
+    color: #0f9d8a;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1.5rem;
+}
+
+.badge-inst {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+}
+
+.badge-inst-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 2rem;
+}
+
+.badge-qr {
+    width: 64px;
+    height: 64px;
+    background: #12324a;
+    /* placeholder for QR */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border-radius: 4px;
+    font-size: 2rem;
+}
+
+.badge-id {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    margin-top: 0.5rem;
+    font-family: monospace;
+}
+
+.ab-download-actions {
+    margin-top: 2rem;
+    width: 100%;
+}
+
+.ab-download-btn {
+    width: 100%;
+    background: #0f9d8a;
+    color: white;
+    border: none;
+    font-weight: 600;
+    padding: 1rem;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(15, 157, 138, 0.3);
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ab-download-btn:hover {
+    background: #0d8a79;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .ab-layout {
+        grid-template-columns: 1fr;
+    }
+}

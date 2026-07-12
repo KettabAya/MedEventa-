@@ -1,0 +1,146 @@
+/* Author Programme Styles */
+
+.ap-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.ap-header {
+    margin-bottom: 2rem;
+}
+
+.ap-header h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #12324a;
+    margin-bottom: 0.5rem;
+}
+
+.ap-header p {
+    color: #5d7b8a;
+    font-size: 1.1rem;
+}
+
+.ap-timeline {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.ap-timeline::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 7px;
+    bottom: 0;
+    width: 2px;
+    background: #e2e8f0;
+}
+
+.ap-timeline-item {
+    position: relative;
+    margin-bottom: 3rem;
+}
+
+.ap-time-marker {
+    position: absolute;
+    left: -2.4rem;
+    top: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #0f9d8a;
+    border: 3px solid #e0f2f1;
+}
+
+.ap-time-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #0f9d8a;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.ap-session-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(15, 157, 138, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.ap-session-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.ap-session-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #12324a;
+    margin-bottom: 0.25rem;
+}
+
+.ap-session-meta {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-bottom: 1.5rem;
+}
+
+.ap-abstract-box {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 1.25rem;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ap-abstract-title {
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 0.25rem;
+}
+
+.ap-authors {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 0.25rem;
+}
+
+.ap-affiliation {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    font-style: italic;
+}
+
+.ap-view-btn {
+    background: rgba(15, 157, 138, 0.1);
+    color: #0f9d8a;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease;
+}
+
+.ap-view-btn:hover {
+    background: rgba(15, 157, 138, 0.2);
+}
+
+.ap-break {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 2rem 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}

@@ -1,6 +1,6 @@
 const { validationResult } = require('express-validator');
 const { createMessage, getMessagesForUser } = require('../models/message.model');
-const { getNotificationsForUser ,getUnreadCountForUser} = require('../models/notification.model');
+const { getNotificationsForUser, getUnreadCountForUser } = require('../models/notification.model');
 // POST /api/messages/send
 const sendMessage = async (req, res) => {
   try {

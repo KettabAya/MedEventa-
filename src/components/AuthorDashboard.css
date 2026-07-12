@@ -1,0 +1,237 @@
+/* Author Dashboard Styles - Mirrored from ParticipantDashboard */
+
+.ad-inner {
+    width: 100%;
+    max-width: 1200px;
+    position: relative;
+    z-index: 1;
+    margin: 0 auto;
+}
+
+/* Header */
+.ad-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(93, 123, 138, 0.08);
+}
+
+.ad-header h1 {
+    font-size: 2.5rem;
+    margin: 0 0 0.5rem;
+    color: #102941;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    position: relative;
+}
+
+.ad-header h1::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #0f9d8a, #12324a);
+    border-radius: 3px;
+}
+
+.ad-header p {
+    margin: 0;
+    color: #5d7b8a;
+    font-size: 1.05rem;
+    font-weight: 400;
+}
+
+.ad-tag {
+    padding: 0.5rem 1.25rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #0f9d8a, #1a5c8a);
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 14px rgba(15, 157, 138, 0.25);
+}
+
+/* Stats Summary */
+.ad-stats-summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.ad-stat-card {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+}
+
+.ad-stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+
+.ad-stat-header {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6c8895;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.ad-stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #12324a;
+    margin-bottom: 0.25rem;
+}
+
+.ad-stat-icon {
+    align-self: flex-end;
+    margin-top: -2.5rem;
+    /* Overlap trick */
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: rgba(15, 157, 138, 0.1);
+    color: #0f9d8a;
+}
+
+/* Submissions List */
+.ad-submissions-section {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.ad-section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #12324a;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.ad-submissions-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.75rem;
+}
+
+.ad-submissions-table th {
+    text-align: left;
+    font-size: 0.8rem;
+    color: #8ca2af;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0 1rem 0.5rem;
+    font-weight: 600;
+}
+
+.ad-submissions-table tr.ad-submission-row {
+    background: white;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.ad-submissions-table tr.ad-submission-row:hover {
+    transform: scale(1.01);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.ad-submissions-table td {
+    padding: 1.25rem 1rem;
+    vertical-align: middle;
+}
+
+.ad-submissions-table td:first-child {
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+}
+
+.ad-submissions-table td:last-child {
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.ad-sub-title {
+    font-weight: 600;
+    color: #12324a;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.ad-sub-authors {
+    font-size: 0.85rem;
+    color: #6c8895;
+}
+
+.ad-sub-date {
+    font-size: 0.9rem;
+    color: #5d7b8a;
+}
+
+.ad-status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.ad-status-accepted {
+    background: #def7ec;
+    color: #03543f;
+}
+
+.ad-status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.ad-status-rejected {
+    background: #fde8e8;
+    color: #9b1c1c;
+}
+
+.ad-action-btn {
+    background: none;
+    border: none;
+    color: #0f9d8a;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+}
+
+.ad-action-btn:hover {
+    background: rgba(15, 157, 138, 0.08);
+}
+
+@media (max-width: 768px) {
+    .ad-stats-summary {
+        flex-direction: column;
+    }
+}

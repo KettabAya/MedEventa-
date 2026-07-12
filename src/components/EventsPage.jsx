@@ -1,6 +1,7 @@
 // src/components/EventsPage.jsx
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FiCalendar, FiUsers, FiCheckCircle } from "react-icons/fi";
 import "./EventsPage.css";
 
 // Featured images
@@ -324,9 +325,8 @@ const EventsPage = ({ extraEvents = [] }) => {
                 onClick={() => openEvent(event)}
               >
                 <div
-                  className={`event-badge-tag ${
-                    event.featured ? "featured-badge" : ""
-                  }`}
+                  className={`event-badge-tag ${event.featured ? "featured-badge" : ""
+                    }`}
                 >
                   {event.badge}
                 </div>
@@ -345,11 +345,11 @@ const EventsPage = ({ extraEvents = [] }) => {
                   <h3 className="event-name">{event.name}</h3>
                   <div className="event-info">
                     <span className="event-date">
-                      <i className="fa-solid fa-calendar"></i>{" "}
+                      <FiCalendar style={{ marginRight: "0.5rem" }} />
                       {formatRange(event.startDate, event.endDate)}
                     </span>
                     <span className="event-participants">
-                      <i className="fa-solid fa-users"></i> {event.participants}
+                      <FiUsers style={{ marginRight: "0.5rem" }} /> {event.participants}
                     </span>
                   </div>
 
@@ -414,7 +414,7 @@ const EventsPage = ({ extraEvents = [] }) => {
 
                 <div className="event-grid-info">
                   <span className="event-grid-date">
-                    <i className="fa-solid fa-calendar"></i>{" "}
+                    <FiCalendar style={{ marginRight: "0.5rem" }} />
                     {formatRange(event.startDate, event.endDate)}
                   </span>
                 </div>
@@ -449,22 +449,24 @@ const EventsPage = ({ extraEvents = [] }) => {
           {processSteps.map((step, index) => (
             <div
               key={index}
-              className={`process-card ${
-                step.highlighted ? "highlighted" : ""
-              }`}
+              className={`process-card ${step.highlighted ? "highlighted" : ""
+                }`}
             >
               <div className="process-number-circle-wrapper">
                 <div className={`process-number-circle ${step.color}`}>
                   {step.icon && (
-                    <i
-                      className={`fa-solid fa-${step.icon} circle-icon`}
-                      aria-hidden="true"
+                    <div
                       style={{
                         position: "absolute",
-                        fontSize: "22px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                         color: "white",
+                        fontSize: "22px"
                       }}
-                    ></i>
+                    >
+                      <FiCheckCircle />
+                    </div>
                   )}
                   <span className="circle-number">{step.number}</span>
                 </div>

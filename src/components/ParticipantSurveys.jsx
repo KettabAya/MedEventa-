@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { ArrowLeft, Search, SlidersHorizontal } from "lucide-react";
 import "./ParticipantSurveys.css";
 import { useNavigate } from "react-router-dom";
@@ -8,11 +9,35 @@ const STORAGE_KEY = "participantSurveys";
 const ParticipantSurveys = ({ registrations }) => {
   const navigate = useNavigate();
 
-  // initialize from localStorage (no setState inside effect)
-  const [surveyState, setSurveyState] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : {};
-  });
+  // Fetch filled surveys from backend
+  const [surveyState, setSurveyState] = useState({});
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    const fetchSurveys = async () => {
+      if (!token) return;
+      try {
+        // Assuming this endpoint returns list of events user has surveyed
+        const res = await axios.get("/api/surveys/my-surveys", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        // Map backend data to surveyState format: { eventId: { status: 'completed', rating: ... } }
+        const newState = {};
+        res.data.forEach(s => {
+          newState[s.eventId] = {
+            status: "completed",
+            rating: s.rating,
+            comment: s.comment,
+            // ... other fields
+          };
+        });
+        setSurveyState(newState);
+      } catch (e) {
+        console.error("Failed to fetch surveys", e);
+      }
+    };
+    fetchSurveys();
+  }, [token]);
 
   const [search, setSearch] = useState("");
   const [activeSurvey, setActiveSurvey] = useState(null); // row currently filling
@@ -26,49 +51,43 @@ const ParticipantSurveys = ({ registrations }) => {
   const [orgRating, setOrgRating] = useState(0);
   const [wouldRecommend, setWouldRecommend] = useState("yes");
 
-  // persist whenever surveyState changes
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(surveyState));
-  }, [surveyState]);
 
-  // build survey items from registrations (only confirmed, past or current)
-  const items = registrations
-    .filter((reg) => reg.status === "confirmed")
-    .map((reg) => {
-      const status = surveyState[reg.id]?.status || "pending";
-      return { ...reg, surveyStatus: status };
-    })
-    .filter((item) => item.title.toLowerCase().includes(search.toLowerCase()));
-
-  const handleOpenSurvey = (item) => {
-    setActiveSurvey(item);
-    const saved = surveyState[item.id];
-    setRating(saved?.rating || 0);
-    setComment(saved?.comment || "");
-    setContentRating(saved?.contentRating || 0);
-    setOrgRating(saved?.orgRating || 0);
-    setWouldRecommend(saved?.wouldRecommend || "yes");
-  };
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!activeSurvey) return;
-    setSurveyState((prev) => ({
-      ...prev,
-      [activeSurvey.id]: {
-        status: "completed",
+
+    try {
+      await axios.post(`/api/events/${activeSurvey.id}/feedback`, {
         rating,
         comment,
         contentRating,
         orgRating,
-        wouldRecommend,
-      },
-    }));
-    setActiveSurvey(null);
-    setRating(0);
-    setComment("");
-    setContentRating(0);
-    setOrgRating(0);
-    setWouldRecommend("yes");
+        wouldRecommend
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      setSurveyState((prev) => ({
+        ...prev,
+        [activeSurvey.id]: {
+          status: "completed",
+          rating,
+          comment,
+          contentRating,
+          orgRating,
+          wouldRecommend,
+        },
+      }));
+
+      setActiveSurvey(null);
+      setRating(0);
+      setComment("");
+      setContentRating(0);
+      setOrgRating(0);
+      setWouldRecommend("yes");
+    } catch (e) {
+      console.error("Failed to submit survey", e);
+      alert("Failed to submit survey. Please try again.");
+    }
   };
 
   const handleBack = () => {

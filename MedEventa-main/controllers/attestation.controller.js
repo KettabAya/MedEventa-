@@ -6,7 +6,7 @@ const { validationResult } = require('express-validator');
 
 const {
   createAttestation,
-  upsertAttestation, 
+  upsertAttestation,
   getAttestationByUser,
   listAttestationsByEvent
 } = require('../models/attestation.model');

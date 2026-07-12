@@ -1,13 +1,25 @@
-// src/components/EditProfile.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Notification from "./Notification";
 import "./EditProfile.css";
 
 function EditProfile() {
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
-  // read once from localStorage, outside of effect
+  // Notification state
+  const [notify, setNotify] = useState({ message: "", type: "" });
+
+  const showNotify = (message, type = "success") => {
+    setNotify({ message, type });
+  };
+
+  const closeNotify = () => {
+    setNotify({ message: "", type: "" });
+  };
+
+  // read once from localStorage as initial state
   const storedUser = (() => {
     try {
       const raw = localStorage.getItem("user");
@@ -18,30 +30,47 @@ function EditProfile() {
   })();
 
   const [form, setForm] = useState({
-    name: storedUser?.name || "",
+    name: storedUser?.nom || storedUser?.name || "",
+    surname: storedUser?.prenom || storedUser?.surname || "",
     email: storedUser?.email || "",
     role: storedUser?.role || "",
-    domain: storedUser?.domain || "",
+    domain: storedUser?.domain || storedUser?.domaine_recherche || "",
     institution: storedUser?.institution || "",
     bio: storedUser?.bio || "",
-    photoUrl: storedUser?.photoUrl || "",
+    photoUrl: storedUser?.photo || storedUser?.photoUrl || "",
   });
 
-  // effect is now only for syncing if user changes elsewhere
+  // Fetch latest profile from backend on mount
   useEffect(() => {
-    if (!storedUser) return;
-    setForm((prev) => ({
-      ...prev,
-      name: storedUser.name || "",
-      email: storedUser.email || "",
-      role: storedUser.role || "",
-      domain: storedUser.domain || "",
-      institution: storedUser.institution || "",
-      bio: storedUser.bio || "",
-      photoUrl: storedUser.photoUrl || "",
-    }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // run once
+    const fetchProfile = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      try {
+        const res = await axios.get("/api/profile", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.data.user) {
+          const u = res.data.user;
+          setForm(prev => ({
+            ...prev,
+            name: u.nom || prev.name,
+            surname: u.prenom || prev.surname,
+            email: u.email || prev.email,
+            role: u.role || prev.role,
+            domain: u.domaine_recherche || prev.domain,
+            institution: u.institution || prev.institution,
+            bio: u.bio || prev.bio,
+            photoUrl: u.photo || prev.photoUrl
+          }));
+          // Update local storage to keep it fresh
+          localStorage.setItem("user", JSON.stringify(u));
+        }
+      } catch (err) {
+        console.error("Failed to fetch fresh profile", err);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const handleChange = (field) => (e) => {
     setForm((f) => ({ ...f, [field]: e.target.value }));
@@ -66,29 +95,44 @@ function EditProfile() {
     navigate("/profile");
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
 
-    const raw = localStorage.getItem("user");
-    const oldUser = raw ? JSON.parse(raw) : {};
+    try {
+      const payload = {
+        nom: form.name,
+        prenom: form.surname,
+        institution: form.institution,
+        domaine_recherche: form.domain,
+        bio: form.bio,
+        role: form.role,
+        photoUrl: form.photoUrl
+      };
 
-    const newUser = {
-      ...oldUser,
-      name: form.name,
-      email: form.email,
-      role: form.role,
-      domain: form.domain,
-      institution: form.institution,
-      bio: form.bio,
-      photoUrl: form.photoUrl,
-    };
+      const res = await axios.put("/api/auth/update-profile", payload, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-    localStorage.setItem("user", JSON.stringify(newUser));
-    goBackToProfile();
+      if (res.data.user) {
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+      }
+      showNotify("Profile updated successfully!", "success");
+      setTimeout(goBackToProfile, 1500);
+
+    } catch (err) {
+      console.error("Update failed", err);
+      showNotify("Failed to update profile. " + (err.response?.data?.message || err.message), "error");
+    }
   };
 
   return (
     <div className="edit-page">
+      <Notification
+        message={notify.message}
+        type={notify.type}
+        onClose={closeNotify}
+      />
       <div className="edit-container">
         {/* header */}
         <div className="edit-topbar">
@@ -146,7 +190,18 @@ function EditProfile() {
         <form onSubmit={handleSave} className="edit-form-grid">
           <div className="edit-card">
             <label>
-              Full name
+              First Name
+              <input
+                type="text"
+                value={form.surname} // Assuming surname is prenom based on my map
+                onChange={handleChange("surname")}
+                required
+              />
+            </label>
+          </div>
+          <div className="edit-card">
+            <label>
+              Last Name
               <input
                 type="text"
                 value={form.name}
@@ -162,8 +217,8 @@ function EditProfile() {
               <input
                 type="email"
                 value={form.email}
-                onChange={handleChange("email")}
-                required
+                disabled // Email usually cannot be changed easily without re-verification
+                className="input-disabled"
               />
             </label>
           </div>
@@ -171,12 +226,19 @@ function EditProfile() {
           <div className="edit-card">
             <label>
               Platform status
-              <input
-                type="text"
-                placeholder="Participant / Author / Committee"
+              <select
                 value={form.role}
                 onChange={handleChange("role")}
-              />
+                className="edit-select"
+              >
+                <option value="SUPER_ADMIN">SUPER_ADMIN</option>
+                <option value="ORGANISATEUR">ORGANISATEUR</option>
+                <option value="COMMUNICANT">COMMUNICANT</option>
+                <option value="PARTICIPANT">PARTICIPANT</option>
+                <option value="MEMBRE_COMITE">MEMBRE_COMITE</option>
+                <option value="INVITE">INVITE</option>
+                <option value="RESP_WORKSHOP">RESP_WORKSHOP</option>
+              </select>
             </label>
           </div>
 

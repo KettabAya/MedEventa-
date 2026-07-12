@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Backend environment keys & packages
+/MedEventa-main/.env
+/MedEventa-main/node_modules/
+/MedEventa-main/uploads/
+
